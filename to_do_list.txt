@@ -1,0 +1,14 @@
+what to do :
+------------
+
+lyall:
+- parse the input
+- separate into command, argument operators, etc. and add to struct 
+- 
+
+
+
+
+aisha:
+- start to get the builtin functions and make sure its working with the parsing
+-
