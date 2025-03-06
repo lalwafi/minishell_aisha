@@ -6,7 +6,7 @@
 /*   By: lalwafi <lalwafi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 12:16:43 by lalwafi           #+#    #+#             */
-/*   Updated: 2025/03/06 13:18:46 by lalwafi          ###   ########.fr       */
+/*   Updated: 2025/03/06 20:02:40 by lalwafi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ int	parser(t_shell *shell)
 			g_sig = 0;
 		}
 		shell->input_L = ft_strtrim_free(expand_them_vars(\
-			shell->input_L, shell->environment, shell), " ");
+			shell->input_L, shell), " ");
 		shell->input_L = rmv_extra_spaces(shell->input_L);
 		shell->num_of_cmds = count_pipes(shell->input_L) + 1;
 		shell->pipe_split_L = split_pipes(shell->input_L, '|');
@@ -51,7 +51,7 @@ void	parse_end(t_shell *shell)
 	}
 	else
 	{
-		// execution(shell, shell->environment);
+		execution(shell, shell->environment);
 		if (shell->pipe_split_L)
 			shell->pipe_split_L = free_array(shell->pipe_split_L);
 		shell->environment->export_env = remake_env(shell->environment);

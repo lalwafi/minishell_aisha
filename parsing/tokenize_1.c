@@ -6,7 +6,7 @@
 /*   By: lalwafi <lalwafi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 11:56:21 by aishamagour       #+#    #+#             */
-/*   Updated: 2025/03/06 13:19:49 by lalwafi          ###   ########.fr       */
+/*   Updated: 2025/03/06 19:54:26 by lalwafi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,40 +39,39 @@ void	tokenize_it(t_shell *shell, char *str, int i)
 	while (ctemp->cmd_args[++i])
 		ctemp->cmd_args[i] = rmv_quotes(ctemp->cmd_args[i]);
 	ft_lstadd_back_cmds(&shell->commands, ctemp);
-	print_commands(shell->commands);
 }
 
-void	print_commands(t_command *cmds)
-{
-	t_command	*ctemp;
-	t_direct	*temp;
-	int			i;
+// void	print_commands(t_command *cmds)
+// {
+// 	t_command	*ctemp;
+// 	t_direct	*temp;
+// 	int			i;
 
-	ctemp = cmds;
-	i = 0;
-	while (ctemp)
-	{
-		printf("----- commands %i -----\n", i++);
-		if (ctemp->cmd_line_L)
-			printf("cmd_line = #%s#\n", ctemp->cmd_line_L);
-		if (ctemp->cmd_args)
-		{
-			i = -1;
-			while (ctemp->cmd_args[++i])
-				printf("cmd_args[%d] = #%s#\n", i, ctemp->cmd_args[i]);
-		}
-		printf("num_of_redir = %d\n", ctemp->num_of_redir);
-		temp = ctemp->redir;
-		while (temp)
-		{
-			print_enum(temp->direct);
-			printf(" , file =  #%s#\n", temp->file);
-			temp = temp->next;
-		}
-		ctemp = ctemp->next;
-	}
-	printf("-----------------------\n");
-}
+// 	ctemp = cmds;
+// 	i = 0;
+// 	while (ctemp)
+// 	{
+// 		printf("----- commands %i -----\n", i++);
+// 		if (ctemp->cmd_line_L)
+// 			printf("cmd_line = #%s#\n", ctemp->cmd_line_L);
+// 		if (ctemp->cmd_args)
+// 		{
+// 			i = -1;
+// 			while (ctemp->cmd_args[++i])
+// 				printf("cmd_args[%d] = #%s#\n", i, ctemp->cmd_args[i]);
+// 		}
+// 		printf("num_of_redir = %d\n", ctemp->num_of_redir);
+// 		temp = ctemp->redir;
+// 		while (temp)
+// 		{
+// 			print_enum(temp->direct);
+// 			printf(" , file =  #%s#\n", temp->file);
+// 			temp = temp->next;
+// 		}
+// 		ctemp = ctemp->next;
+// 	}
+// 	printf("-----------------------\n");
+// }
 
 void	print_enum(t_state en)
 {

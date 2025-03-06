@@ -6,7 +6,7 @@
 /*   By: amagoury <amagoury@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 23:04:46 by amagoury          #+#    #+#             */
-/*   Updated: 2025/03/05 23:05:13 by amagoury         ###   ########.fr       */
+/*   Updated: 2025/03/06 15:43:24 by amagoury         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,17 +25,16 @@ void	handle_input(t_context *context, char *file, bool ignore)
 		else
 			ft_putstr_fd(": No such file or directory\n", 2);
 		context->error = 1;
-		return;
+		return ;
 	}
 	if (ignore)
 	{
 		close(fd);
-		return;
+		return ;
 	}
 	safe_close(context->inputfd);
 	context->inputfd = fd;
 }
-
 
 void	handle_output(t_context *context, char *file, bool append)
 {
@@ -52,7 +51,7 @@ void	handle_output(t_context *context, char *file, bool append)
 		else
 			ft_putstr_fd(": No such file or directory\n", 2);
 		context->error = 1;
-		return;
+		return ;
 	}
 }
 

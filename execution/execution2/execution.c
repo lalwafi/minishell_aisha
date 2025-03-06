@@ -6,7 +6,7 @@
 /*   By: lalwafi <lalwafi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/02 21:11:32 by lalwafi           #+#    #+#             */
-/*   Updated: 2025/03/06 02:11:21 by lalwafi          ###   ########.fr       */
+/*   Updated: 2025/03/06 18:09:20 by lalwafi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ char	**copy_strs(char **strs)
 			return (free_array(new), NULL);
 		i++;
 	}
-	return (new);	
+	return (new);
 }
 
 char	*find_path(char *cmd, char **env)
@@ -72,7 +72,7 @@ void	handle_everything(t_context *context, t_command *commands, char **env)
 		handle_everything(context->next, commands->next, env);
 }
 
-int	execute_command( t_shell *shell ,t_context *context, t_environment *env)
+int	execute_command( t_shell *shell, t_context *context, t_environment *env)
 {
 	if (context->next)
 		free_context_list(context->next);
@@ -92,24 +92,21 @@ int	execute_command( t_shell *shell ,t_context *context, t_environment *env)
 	if (context->cmd == NULL)
 		return (127);
 	if (is_bulidin(context->cmd))
-		return(run_bulidin(shell, context, env));
+		return (run_bulidin(shell, context, env));
 	if (execve(context->cmd, context->args, env->export_env) == -1)
 	{
 		ft_putstr_fd(context->args[0], 2);
 		ft_putstr_fd(": Error executing\n", 2);
 	}
-	else
-		printf("buildin work\n");
 	// TODO check error type and print appropriate msg
 	return (127); //TODO Return with correct error msg
 }
 
-
 void	execution(t_shell *shell, t_environment *env)
 {
 	t_context	*context;
-	// int			pid;
 	int			status;
+	int			last_pid;
 
 	context = create_context_list(shell->commands, env, shell);
 	// TODO check error
@@ -120,11 +117,10 @@ void	execution(t_shell *shell, t_environment *env)
 		shell->exit_code = exec_bulidin(shell, context, env);
 		return ;
 	}
-	execute_context(shell, context, env);
-	// pid = execute_context(shell, context, env);
+	last_pid = execute_context(shell, context, env);
 	signal(SIGINT, SIG_IGN);
-	// waitpid(pid, &status, 0);
-	while (wait(&status) != -1)
+	waitpid(last_pid, &status, 0);
+	while (wait(NULL) != -1)
 		;
 	// TODO check if status is signaled
 	shell->exit_code = WEXITSTATUS(status);

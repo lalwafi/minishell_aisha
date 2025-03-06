@@ -6,7 +6,7 @@
 /*   By: lalwafi <lalwafi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 17:37:42 by lalwafi           #+#    #+#             */
-/*   Updated: 2025/03/06 13:17:24 by lalwafi          ###   ########.fr       */
+/*   Updated: 2025/03/06 19:45:44 by lalwafi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ void	minishell(t_shell *shell)
 {
 	while (1)
 	{
+		signal(SIGQUIT, SIG_IGN);
 		signal(SIGINT, handle_signal);
 		shell->input_L = readline("meowshell> ");
 		if (shell->input_L && shell->input_L[0] != '\0')
@@ -28,9 +29,9 @@ void	minishell(t_shell *shell)
 		{
 			shell->parse_fail_L = parser(shell);
 			parse_end(shell);
-	}
+		}
 		else if (shell->input_L[0] == '\0')
-			write(2, "empty line\n", 11);
+			shell->parse_fail_L = 0;
 		free(shell->input_L);
 		free_cmds(shell);
 	}
@@ -58,8 +59,6 @@ int	main(int ac, char **av, char **env)
 	ft_bzero(&shell, sizeof(t_shell));
 	initialize_shell(&shell);
 	get_env(&shell, env);
-	signal(SIGQUIT, SIG_IGN);
-	signal(SIGINT, handle_signal);
 	minishell(&shell);
 	write(1, "exit\n", 5);
 	free_all(&shell);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amagoury <amagoury@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lalwafi <lalwafi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 22:33:58 by amagoury          #+#    #+#             */
-/*   Updated: 2025/03/05 23:04:24 by amagoury         ###   ########.fr       */
+/*   Updated: 2025/03/06 19:53:08 by lalwafi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ int	heredoc_child(int fds[2], char *delim, t_shell *shell)
 	str = readline("heredoc> ");
 	while (str && ft_strncmp(str, delim, -1) != 0)
 	{
-		str = expand_them_vars(str, shell->environment, shell);
+		str = expand_them_vars(str, shell);
 		ft_putendl_fd(str, fds[1]);
 		free(str);
 		str = readline("heredoc> ");
@@ -47,13 +47,19 @@ bool	handle_heredoc(t_context *context, char *delim, t_shell *shell)
 	int	pid;
 	int	status;
 
+	if (pipe(fds) == -1)
+		return (false);
 	pipe(fds);
 	pid = fork();
-	// TODO handle failure
-	if (pid == 0)
+	if (pid == -1)
 	{
-		exit(heredoc_child(fds, delim, shell));
+		perror("fork");
+		close(fds[0]);
+		close(fds[1]);
+		return (false);
 	}
+	if (pid == 0)
+		exit(heredoc_child(fds, delim, shell));
 	close(fds[1]);
 	signal(SIGINT, SIG_IGN);
 	waitpid(pid, &status, 0);
@@ -63,6 +69,7 @@ bool	handle_heredoc(t_context *context, char *delim, t_shell *shell)
 	context->inputfd = fds[0];
 	return (true);
 }
+
 bool	find_heredoc_after(t_direct *direct)
 {
 	while (direct)

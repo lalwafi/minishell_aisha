@@ -6,7 +6,7 @@
 /*   By: amagoury <amagoury@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/30 19:50:30 by aishamagour       #+#    #+#             */
-/*   Updated: 2025/03/05 22:32:29 by amagoury         ###   ########.fr       */
+/*   Updated: 2025/03/06 15:44:01 by amagoury         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ char	*add_quotes(char *value)
 	new_value = ft_strjoin_free_a(new_value, "\"");
 	return (new_value);
 }
+
 t_context	*create_context(void)
 {
 	t_context	*context;
@@ -51,6 +52,7 @@ t_context	*create_context(void)
 	context->next = NULL;
 	return (context);
 }
+
 void	safe_close(int fd)
 {
 	if (fd != -1)

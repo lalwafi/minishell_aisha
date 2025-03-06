@@ -6,7 +6,7 @@
 /*   By: lalwafi <lalwafi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 14:19:39 by lalwafi           #+#    #+#             */
-/*   Updated: 2025/03/05 23:00:20 by lalwafi          ###   ########.fr       */
+/*   Updated: 2025/03/06 16:34:05 by lalwafi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,4 +56,20 @@ void	free_cmds(t_shell	*shell)
 		}
 		free(shell->commands);
 	}
+}
+
+char	**free_array(char **result)
+{
+	int	i;
+
+	i = 0;
+	if (!result)
+		return (NULL);
+	while (result && result[i])
+	{
+		free(result[i]);
+		i++;
+	}
+	free(result);
+	return (NULL);
 }

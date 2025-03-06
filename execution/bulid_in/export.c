@@ -6,7 +6,7 @@
 /*   By: lalwafi <lalwafi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 19:45:26 by aishamagour       #+#    #+#             */
-/*   Updated: 2025/03/06 02:11:45 by lalwafi          ###   ########.fr       */
+/*   Updated: 2025/03/06 17:15:43 by lalwafi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,11 @@
 
 void	print_env(t_values *env, bool export) //
 {
-	// int		i;
 	char	*quoted_value;
 
 	(void) export;
 	if (!env)
 		return ;
-	// i = 0;
 	while (env)
 	{
 		ft_putstr_fd("declare -x ", 1);

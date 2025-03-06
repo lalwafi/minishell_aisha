@@ -6,7 +6,7 @@
 /*   By: lalwafi <lalwafi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/30 07:35:24 by lalwafi           #+#    #+#             */
-/*   Updated: 2025/03/06 12:49:37 by lalwafi          ###   ########.fr       */
+/*   Updated: 2025/03/06 20:02:36 by lalwafi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,6 @@ typedef struct s_values
 {
 	char				*key; // before "=" (eg; USER)
 	char				*value; // after "=" (eg; lalwafi)
-	// char				*envstr; // the whole line (eg; USER = lalwafi) probably will delete
 	t_values			*next;
 } t_values;
 
@@ -109,17 +108,13 @@ typedef struct s_context
 	struct s_context	*next;
 }	t_context;
 
-
-// typedef struct s_token
-// {
-//     char *str;             // for normal text aisha
-//     char *blockers;       // the bolcks withe the text will stop aisha
-// 	char *dupl_block;
-// 	char *s_block;
-//    	int len;               //  text len aisha
-//     bool convert;          // if the text need to convert or not aisha
-// } t_token;
-
+typedef struct s_split
+{
+	char	**result;
+	int		i;
+	int		len;
+	int		counter;
+}	t_split;
 
 // ================================================================================== //
 
@@ -133,11 +128,14 @@ void		make_values_node(char *key, t_shell *shell);
 void		minishell(t_shell *shell);
 char		**split_pipes(char const *s, char c);
 char		**make_letters(char **result, char const *s, char c, int count);
+t_split		*make_letters_2(t_split *sp, char const *s, char c);
 int			make_words(char const *s, char c);
 char		**one_word(char const *s, char **result);
 char		**free_array(char **result);
 int			skip_quotes(const char *str, int i);
 char		*rmv_extra_spaces(char *str);
+int			count_rmv_extra_spaces(int i, int j, char *str);
+char		*rmv_extra_spaces_2(char *result, char *str, int i, int j);
 int			open_quote_or_no(char *str);
 int			count_pipes(char *str);
 int			check_pipes(char *input);
@@ -181,14 +179,16 @@ bool		operator_valid(char *input);
 void		tokenize_it(t_shell *shell, char *str, int i);
 int			tokenize_loop(t_shell *shell, t_command **ctemp, int i);
 int			token_quotes(t_command **ctemp, int i);
-char		*expand_them_vars(char *str, t_environment *env, t_shell *shell);
+char		*expand_them_vars(char *str, t_shell *shell);
+char		*expand_word_vars(char *str, int i, t_shell *sh);
+char		*string_but_string_2(char *pushed, char *pusher, int start, int rmv);
 char		*string_but_string(char *pushed, char *pusher, int start, int rmv);
 char		*return_var(char *str, int start, int len, t_environment *env);
 void		operator_tokens(t_shell *shell, t_command *cmds , int i);
 char		*copy_file(char *str, int i, t_command *cmds, int start);
 t_state		operators_check(char *str, int i);
 void		print_enum(t_state en);
-void		print_commands(t_command *cmds);
+// void		print_commands(t_command *cmds);
 
 
 // ================================================================================== //
@@ -203,7 +203,6 @@ int is_in_env(char **export_env, char *content);
 t_context	*create_context(void);
 void	safe_close(int fd);
 //aisha bulid_in
-t_command *creat_command(char *cmd);
 void add_command(t_command **command, t_command *new);
 int my_cd(t_environment *env, char *path);
 char	*get_new_path(t_environment *env, char *path);
@@ -215,8 +214,10 @@ void print_list(t_environment *head) ;
 t_values*create_node(char *cmd);
 void add_node(t_command **head, char *cmd);
 int my_echo(t_context *context);
+int	get_fd(t_context *ctx);
+void	print_args(int fd, char **args, int i);
 int 	ms_pwd(void);
-void    exit_shell(t_shell *shell,t_context *text);
+// void    exit_shell(t_shell *shell,t_context *text);
 char  *add_quotes(char *value);
 void	print_env(t_values *env, bool export);
 int env_add(char *value, char ***env);
@@ -244,6 +245,10 @@ void	handle_redirects(t_context *context, t_command *command);
 void	handle_output(t_context *context, char *file, bool append);
 void	handle_input(t_context *context, char *file, bool ignore);
 void	execution(t_shell *shell, t_environment *env);
-
+void	exit_utils(t_shell *shell, t_context *cntx);
+void	exit_utils2(t_shell *shell, char *arg, t_context *cntx);
+void	free_exit(t_shell *shell, t_context *cntx);
+int		ft_str_isnum(char *c);
+int		ft_exit(t_shell *shell, t_context *cntx);
 
 #endif

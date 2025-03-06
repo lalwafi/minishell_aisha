@@ -6,27 +6,11 @@
 /*   By: lalwafi <lalwafi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 20:21:30 by lalwafi           #+#    #+#             */
-/*   Updated: 2025/03/06 02:56:51 by lalwafi          ###   ########.fr       */
+/*   Updated: 2025/03/06 17:13:52 by lalwafi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
-
-char	**free_array(char **result)
-{
-	int	i;
-
-	i = 0;
-	if (!result)
-		return (NULL);
-	while (result && result[i])
-	{
-		free(result[i]);
-		i++;
-	}
-	free(result);
-	return (NULL);
-}
 
 int	make_words(char const *s, char c)
 {
@@ -53,42 +37,50 @@ int	make_words(char const *s, char c)
 
 char	**make_letters(char **result, char const *s, char c, int count)
 {
-	int	i;
-	int	counter;
-	int	len;
+	t_split	*split;
 
-	i = 0;
-	counter = 0;
-	len = 0;
-	while (s[i] != '\0' && counter < count)
+	split = ft_calloc(sizeof(t_split), 1);
+	split->i = 0;
+	split->counter = 0;
+	split->len = 0;
+	split->result = result;
+	while (s[split->i] != '\0' && split->counter < count)
 	{
-		if (s[i] == '"' || s[i] == '\'')
-			i = skip_quotes(s, i);
-		while (s[i] == ' ' && s[i] != '\0')
-			i++;
-		if (s[i] != c)
+		if (s[split->i] == '"' || s[split->i] == '\'')
+			split->i = skip_quotes(s, split->i);
+		while (s[split->i] == ' ' && s[split->i] != '\0')
+			split->i++;
+		if (s[split->i] != c)
 		{
-			while (s[i + len] != '\0' && s[i + len] != c)
-			{
-				if (s[i + len] == '"' || s[i + len] == '\'')
-					len = skip_quotes(s, (i + len)) - i;
-				else
-					len++;
-			}
-			while (s[i + len - 1] != c && s[i + len - 1] == ' ')
-				len--;
-			result[counter] = ft_substr(s, i, len);
-			if (!result[counter])
-				return (free_array(result));
-			i += len;
-			len = 0;
-			counter++;
+			split = make_letters_2(split, s, c);
+			if (split == NULL)
+				return (NULL);
 		}
 		else
-			i++;
+			split->i++;
 	}
-	result[counter] = NULL;
+	result[split->counter] = NULL;
 	return (result);
+}
+
+t_split	*make_letters_2(t_split *sp, char const *s, char c)
+{
+	while (s[sp->i + sp->len] != '\0' && s[sp->i + sp->len] != c)
+	{
+		if (s[sp->i + sp->len] == '"' || s[sp->i + sp->len] == '\'')
+			sp->len = skip_quotes(s, (sp->i + sp->len)) - sp->i;
+		else
+			sp->len++;
+	}
+	while (s[sp->i + sp->len - 1] != c && s[sp->i + sp->len - 1] == ' ')
+		sp->len--;
+	sp->result[sp->counter] = ft_substr(s, sp->i, sp->len);
+	if (!sp->result[sp->counter])
+		return (NULL);
+	sp->i += sp->len;
+	sp->len = 0;
+	sp->counter++;
+	return (sp);
 }
 
 char	**one_word(char const *s, char **result)

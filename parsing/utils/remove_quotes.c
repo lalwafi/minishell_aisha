@@ -6,16 +6,18 @@
 /*   By: lalwafi <lalwafi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 20:48:03 by lalwafi           #+#    #+#             */
-/*   Updated: 2025/03/06 13:15:21 by lalwafi          ###   ########.fr       */
+/*   Updated: 2025/03/06 17:02:22 by lalwafi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
-char	*delete_quotes(char *str, int i, int j,	char *result, char quote)
+char	*delete_quotes(char *str, int j, char *result, char quote)
 {
 	bool	in_q;
+	int		i;
 
+	i = 0;
 	in_q = FALSE;
 	while (str[i])
 	{
@@ -50,7 +52,7 @@ char	*rmv_quotes(char *str)
 	result = malloc(sizeof(char) * (len + 1));
 	if (!result)
 		return (NULL);
-	return (delete_quotes(str, 0, 0, result, quote));
+	return (delete_quotes(str, 0, result, quote));
 }
 
 int	count_rmv_quotes(char *str, int i, int len)
