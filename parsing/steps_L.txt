@@ -1,0 +1,187 @@
+parsing steps cuz im lost:
+##########################
+
+initialize✅
+
+get the environment set up ✅
+	- increase SHLVL❌
+
+signals✅
+
+readline for input✅
+
+history✅
+
+check open quotes✅
+
+check if pipes are valid✅
+	- Leading pipe: | ls✅
+	- Trailing pipe: ls |✅
+	- Consecutive pipes: ls ||| grep✅
+	- Empty command after pipe: | ✅
+	- Empty command between pipes: ls || grep ✅
+
+split by pipes and remove white spaces before and after✅
+
+u can probably expand variables while tokenizing so u dont malloc too much NAHHH
+	- substr invalid variables 
+	- tokenize and expand variables while tokenizing
+	- parse tokens and add to structs
+
+
+tokenize (split into 'words')
+    - preserve quotes??? no remove them ("echo he\"llo y'all \" " -> "echo" "hello y'all")
+	- DUMBASS SUBJECT SAYS DONT INTERPRET SPECIAL CHARACERS LIKE ; OR \
+    - expand variables while tokenizing and use substr to remove each part I think
+    - 
+
+EXPAND THE VARIABLES FIRST!!!!!! ( "export B=ls"    \n     "$B -la") !!!!!!!!!!!!!!!!!!!
+expand env variables (eg; $USER) if double quotes❌
+	- $?x (invalid variable)❌
+	- $123 (numbers aren't valid variable names)❌
+		bash-3.2$ echo $USER
+		lalwafi
+		bash-3.2$ echo ae$USER-ae
+		aelalwafi-ae
+		bash-3.2$ echo ae$USER'ae'
+		aelalwafiae
+		bash-3.2$ echo ae$USER\ae'
+		> 
+		> '
+		aelalwafiae
+
+
+		bash-3.2$ echo ae$USER\ae
+		aelalwafiae
+		bash-3.2$ echo ae$USER+ae
+		aelalwafi+ae
+		bash-3.2$ echo ae$USER+_e
+		aelalwafi+_e
+		bash-3.2$ echo ae$USER_ae
+		ae
+		bash-3.2$ echo ae$USER#ae
+		aelalwafi#ae
+		bash-3.2$ echo ae$USER@ae
+		aelalwafi@ae
+		bash-3.2$ echo ae$1USERae
+		aeUSERae
+		bash-3.2$ echo ae$a1USERae
+		ae
+
+check if theres any syntax errors in the beginning or end❌
+					(	- ls &&| grep❌ )		THIS IS BONUS DUMBASS
+					(	- Mixed: ls && | grep❌) THIS IS BONUS DUMBASS
+					(	- Leading &&: && ls❌)	THIS IS BONUS DUMBASS
+
+	- Missing filename: ls >❌
+	- Double <: cat << < file❌
+	- Mixed without commands: < > file❌
+	- cat <<❌
+
+
+put everything into the structs ❌
+	- redirects into recirects
+	- command into cmd 
+	- command agruments into cmg_args
+	.......
+
+
+					(replace \ characters (eg; \n , \t , ...)❌ )THIS IS BONUS DUMBASS
+
+handle $?❌
+
+preserve quotes❌
+
+
+
+
+= things that should fail
+	- echo m'y frie"nd
+	- echo hello > > file 
+	- '|'   ,   ">"    and those stuff (actually just operators alone)
+	- 
+= this should pass for parsing (not neccessarily execution)
+	- echo hello | meow world
+	- echo hello world | > meow.txt
+	- echo hello | $USER
+	- ls | -
+	- ls %&$
+	- cat << EOF grep
+	- cat file@
+	- exit 9 2
+	- < meow
+	- > meow
+	- << meow
+	- >> meow
+exit with codes, look up what they should be
+
+
+Commands That Should Pass Parsing
+	echo hello | grep h | wc -l
+	ls -la > output.txt
+	cat < file.txt | grep "pattern" >> result.txt
+	echo "foo 'bar" | cat -e
+	grep "test" file1 file2
+	ls | sort | uniq
+	cat << EOF | grep hello
+	hello
+	EOF
+	echo $lolwrongvar hello
+	echo hello | > file.txt
+Commands That Should Fail Parsing
+	| echo hello
+	echo hello ||
+	ls > | wc
+	cat <<
+	grep || sort
+	ls > output.txt <
+	cat << EOF | | grep hello
+	echo "unclosed quote
+	ls ;; pwd
+	$USERecho hello
+
+
+
+
+notes
+- bash ececutes from the end to the start (world hello)
+- pipe changes fd from output to input
+- check error codes
+- variable expansion should work, but break it
+- make sure pipe check is working
+
+test
+- echo hello | grep h | wc -l
+- cat < file.txt | grep "pattern" >> result.txt
+- echo "foo 'bar" | cat -e
+- grep "test" file1 file2
+- echo $$USER_A
+- cd -
+- haha|a|ha   or    a|a|a|a|a
+- 
+
+test for execution
+- echo hello world | echo meow
+- echo woof > file123
+- meow
+- 
+
+------------------------------------------------------
+variables:
+
+	invalid:
+	- export "VAR"=hello  # Syntax error
+	- export 'VAR'=hello  # Syntax error
+	- export VAR"TEST"=hello  # Syntax error
+	- export VAR'TEST'=hello  # Syntax error
+	- export VAR TEST=hello  # Space causes an error
+
+	valid:
+	- export VAR_TEST=hello
+	- export VAR123=hello
+	- export _VAR=hello
+	
+------------------------------------------------------
+
+
+✅❌

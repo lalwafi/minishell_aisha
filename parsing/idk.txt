@@ -1,0 +1,123 @@
+
+
+1. Syntax Errors
+		Unclosed quotes (' or ").
+		Misuse of pipes (|):
+		Starting/ending with a pipe (|).
+		Consecutive pipes (||).
+		Misuse of redirects (>, >>, <):
+		No file/command after a redirect.
+		Invalid syntax like > > file or | <.
+
+2. Tokenization
+		Split input by:
+		Pipes-  (|).
+		Redirections (>, >>, <).
+		Whitespace outside of quotes.
+		Preserve quotes and handle escape characters (\).
+
+3. Expansion
+		Expand environment variables ($VAR).
+		Handle special variables like $?.
+		Ignore expansion inside single quotes ('), but expand inside double quotes (").
+
+4. Quotes Handling
+		Remove quotes but preserve the content inside them.
+		Handle nested quotes correctly.
+
+5. Redirections
+		Ensure valid file names after >/>>/<.
+		Handle heredoc (<<):
+		Match the delimiter.
+		Expand variables unless quoted.
+
+6. Whitespace
+		Trim unnecessary leading/trailing spaces.
+		Ignore extra spaces between tokens (e.g., cmd | cmd).
+
+7. Pipelines
+		Validate pipeline structure and token sequence.
+
+8. Command Validation
+		Ensure valid command names after each pipe/redirect.
+
+9. Edge Cases
+		Empty input or input with only spaces.
+		Special characters in file/command names.
+		Escaped characters like \|, \>, etc.
+
+10. Error Handling
+		Provide appropriate error messages for invalid syntax (like Bash does).
+
+
+
+
+
+
+Variable expanding
+Put it after checking for pipe errors and white space removal and do it while tokenizing
+
+Maybe parse while tokenizing??
+
+Locate variables by looking for $ unless it's a single quote then skip literally everything in it
+- if it's $ then compare everything after up until the space to the env keys
+- if no matches come up then substr it, if matches come up then continue 
+- After this thing if it returns anything not 0 continue expanding
+- Count what you would need to expand, if you come across $ then start counting the value from the env and skip the $ until a space
+- Reallocate a new input line and start copying with the same method mentioned above
+- Voilla
+
+- Replace special characters also (eg; /n , /t ,  ...)
+- After variable expanding go to pipe split and whitespace it again
+
+Tokenize then start parsing by words, make sure 
+
+
+
+
+
+
+
+- Start parsing each pipe split I DONT LIKE THIS I CHANGE 
+- Has to start with either letter, quote, redirect (check if all are valid), yadda yadda
+- If something fails parsing return -1 and set something as that, so that if parsing fails it exits and says fail
+- Go to next pipe split and keep checking, you can do something like this 
+while (pipe_split[++i] != NULL)
+{
+    Parse_fail = parse_line(pipe_split[i]);
+    If (Parse_fail == -1)
+         Break;
+}
+Don't care if commands are valid only that the grammar makes sense
+- 
+
+
+------------------------------------------------------
+variables:
+
+	invalid:
+	- export "VAR"=hello  # Syntax error
+	- export 'VAR'=hello  # Syntax error
+	- export VAR"TEST"=hello  # Syntax error
+	- export VAR'TEST'=hello  # Syntax error
+	- export VAR TEST=hello  # Space causes an error
+
+	valid:
+	- export VAR_TEST=hello
+	- export VAR123=hello
+	- export _VAR=hello
+	
+------------------------------------------------------
+
+
+
+
+cat < file.txt | grep "pattern   $USER    $aaa" >> result.txt
+
+remove invalid variables (eg: "$aaa")
+tokenize and expand variables and parse
+	go left to right
+		- valid command
+		- valid redirect, as in < , > , << , >> 
+		- file after redirect
+		- 

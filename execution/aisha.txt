@@ -1,0 +1,15 @@
+-- read the notes you got its will help you 
+-make sure you anderstand the fork syetem beacues we need it 
+-- for now you  need to collect data to start to do this project
+go step by step to know what you get 
+
+-handel the bulid_in;
+
+
+issues:
+cd update enviroment 
+//exit ->change  the struct  pass shell && pass t_context  ues exit shell
+env ->change to write
+export ->need to  fix it
+unset -> is not working 
+pwd  should work after update the cd 

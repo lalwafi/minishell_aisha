@@ -4,11 +4,151 @@ what to do :
 lyall:
 - parse the input
 - separate into command, argument operators, etc. and add to struct 
-- 
+- make sure the parsing is working with the builtins
 
 
 
 
 aisha:
 - start to get the builtin functions and make sure its working with the parsing
--
+-handel signels
+-readlines and function hestory
+- i dont know what the fuck is dup2 but  we need to deal with it 
+
+
+
+
+
+what I got  for the to do list
+
+//Mandatory Features
+Basic Shell Functions
+1- Prompt:✅
+Display a prompt waiting for a new command.  
+
+
+2-History:❌
+Implement command history functionality.(not done)
+
+
+3- Command Execution:❌
+Search and execute commands using $PATH, relative, or absolute paths.
+Quotes and Redirections
+
+4- Single & Double Quotes:❌
+Handle ' (single quotes) to prevent interpreting metacharacters.
+Handle " (double quotes), interpreting $ inside them. (not done yet)
+
+5- Redirections:❌
+< Input redirection.
+> Output redirection.
+<< Here-document functionality.
+>> Append redirection.
+
+6- Pipes❌
+Implement Piping:
+Connect command outputs to the inputs of subsequent commands using |.
+
+7- Environment Variables❌
+Variable Expansion:
+Expand $ followed by a sequence of characters.
+Expand $? to the exit status of the last foreground pipeline.
+
+8- Signal Handling❌✅✅
+Handle signals:
+Ctrl+C creates a new prompt.
+Ctrl+D exits the shell.
+Ctrl+\ does nothing.
+
+9- Built-in Commands❌
+Implement built-ins:
+echo (with -n option).
+cd (relative/absolute path only).
+pwd (print working directory).
+export (no options).
+unset (no options).
+env (no options/arguments).
+exit (no options).
+
+10- Memory Management❌
+Free memory:
+Ensure no leaks in your code.
+You don't need to fix memory leaks in readline().
+
+✅❌
+
+
+----splitting steps between parsing and execution----
+
+############## Parsing Steps
+
+1. Tokenize Input
+   - Split the input string into tokens based on spaces, preserving quotes ('/").  
+   - Identify and isolate symbols like |, <, >, and >>.
+
+2. Handle Quotes
+   - Single Quotes ('): Treat the entire content inside as literal text.  
+   - Double Quotes ("): Process the content, allowing variable expansion and preserving spaces.  
+
+3. Escape Characters
+   - Identify backslashes (\) and process them to escape special characters.  
+
+4. Expand Variables
+   - Replace $VARIABLE_NAME with its corresponding value.  
+   - Handle special variables like $? for the last command status.  
+
+5. Identify Commands and Arguments
+   - Group tokens into commands and their associated arguments.  
+   - Ensure commands are properly delimited by pipes (|).  
+
+6. Detect Redirections
+   - Recognize < (input), > (output overwrite), and >> (output append).  
+   - Extract filenames and validate their syntax.  
+
+7. Validate Syntax
+   - Check for unclosed quotes or invalid token sequences (e.g., | |, < >).  
+   - Report errors for malformed input.  
+
+8. Prepare Data Structures
+   - Create a list of commands with associated arguments, redirection types, and files.  
+   - Store pipe and redirection relationships for execution.
+
+---
+
+############## Execution Steps
+
+1. Handle Built-in Commands
+   - Directly process commands like echo, cd, pwd, export, unset, env, and exit.  
+   - Return without forking if a built-in is executed.  
+
+2. Redirections
+   - Input (<): Open the file for reading and replace stdin with the file descriptor.  
+   - Output (>): Open the file for writing and truncate its contents. Replace stdout with the descriptor.  
+   - Append (>>): Open the file for appending and replace stdout with the descriptor.  
+
+3. Pipes
+   - Create pipes using pipe().  
+   - Fork processes for each command in the pipeline.  
+   - Redirect stdin and stdout appropriately for each process to link them via pipes.  
+
+4. PATH Resolution
+   - Search for the executable in directories listed in the PATH environment variable.  
+   - If the command is not found, print an error and exit the child process.  
+
+5. Fork and Execute
+   - Use fork() to create a new process for each command.  
+   - In the child process, replace stdin/stdout based on redirections and pipes.  
+   - Use execve() to execute the command.  
+
+6. Wait for Processes
+   - In the parent process, wait for all child processes to complete using waitpid().  
+   - Update the shell’s status ($?) with the last process's exit code.  
+
+7. Close File Descriptors
+   - Close unused pipe ends in both parent and child processes.  
+   - Ensure all file descriptors opened for redirection are closed properly.  
+
+8. Handle Signals
+   - Respond to Ctrl-C by interrupting processes but not exiting the shell.  
+   - Handle Ctrl-D gracefully to exit the shell.  
+   - Ignore Ctrl-\.
