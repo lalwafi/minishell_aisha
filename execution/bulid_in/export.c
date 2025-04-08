@@ -6,13 +6,13 @@
 /*   By: lalwafi <lalwafi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 19:45:26 by aishamagour       #+#    #+#             */
-/*   Updated: 2025/03/06 17:15:43 by lalwafi          ###   ########.fr       */
+/*   Updated: 2025/03/06 21:30:09 by lalwafi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
-void	print_env(t_values *env, bool export) //
+void	print_env(t_values *env, bool export, int fd) //
 {
 	char	*quoted_value;
 
@@ -21,11 +21,11 @@ void	print_env(t_values *env, bool export) //
 		return ;
 	while (env)
 	{
-		ft_putstr_fd("declare -x ", 1);
-		ft_putstr_fd(env->key, 1);
-		ft_putstr_fd("=", 1);
+		ft_putstr_fd("declare -x ", fd);
+		ft_putstr_fd(env->key, fd);
+		ft_putstr_fd("=", fd);
 		quoted_value = add_quotes(env->value);
-		ft_putendl_fd(quoted_value, 1);
+		ft_putendl_fd(quoted_value, fd);
 		free(quoted_value);
 		env = env->next;
 	}
@@ -97,10 +97,14 @@ t_context *cntx)
 bool	ft_export(t_context *cntx, t_values *env, t_shell *shell)
 {
 	int	i;
+	int	fd;
 
+	fd = cntx->outputfd;
+	if (fd == -1)
+		fd = 1;
 	if (!cntx->args[1])
 	{
-		print_env(env, true);
+		print_env(env, true, fd);
 		return (true);
 	}
 	i = 0;

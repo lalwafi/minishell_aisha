@@ -6,7 +6,7 @@
 /*   By: lalwafi <lalwafi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 22:33:58 by amagoury          #+#    #+#             */
-/*   Updated: 2025/03/06 19:53:08 by lalwafi          ###   ########.fr       */
+/*   Updated: 2025/03/07 02:31:20 by lalwafi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,7 @@ t_context	*handle_heredocs(t_command *command, int inputfd, t_shell *shell)
 		{
 			if (handle_heredoc(context, temp->file, shell) == FALSE)
 				shell->exit_code = 1;
-		}	// TODO handle failure
+		}
 		temp = temp->next;
 	}
 	if (command->next)

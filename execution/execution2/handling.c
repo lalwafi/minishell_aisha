@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handling.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amagoury <amagoury@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lalwafi <lalwafi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 23:04:46 by amagoury          #+#    #+#             */
-/*   Updated: 2025/03/06 15:43:24 by amagoury         ###   ########.fr       */
+/*   Updated: 2025/03/06 21:48:52 by lalwafi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,4 +70,27 @@ void	handle_redirects(t_context *context, t_command *command)
 			handle_output(context, temp->file, true);
 		temp = temp->next;
 	}
+}
+
+void	handle_everything(t_context *context, t_command *commands, char **env)
+{
+	context->args = copy_strs(commands->cmd_args);
+	if (is_bulidin(commands->cmd_args[0]))
+		context->cmd = ft_strdup(commands->cmd_args[0]);
+	else if (commands->cmd_args[0] != NULL)
+		context->cmd = find_path(commands->cmd_args[0], env);
+	handle_redirects(context, commands);
+	if (commands->next)
+		handle_everything(context->next, commands->next, env);
+}
+
+int	handle_signaled(int signal)
+{
+	if (signal == SIGINT)
+		ft_putstr_fd("\n", 2);
+	if (signal == SIGQUIT)
+		ft_putstr_fd("something went wrong\n", 2);
+	if (signal == SIGSEGV)
+		ft_putstr_fd("segfault\n", 2);
+	return (signal + 128);
 }

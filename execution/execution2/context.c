@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   context.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amagoury <amagoury@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lalwafi <lalwafi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 23:00:06 by amagoury          #+#    #+#             */
-/*   Updated: 2025/03/06 16:26:03 by amagoury         ###   ########.fr       */
+/*   Updated: 2025/03/06 21:36:25 by lalwafi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ int	execute_context(t_shell *shell, t_context *context, t_environment *env)
 		pid = fork();
 		if (pid == 0)
 		{
-			status = execute_command(shell, context, env);
+			status = execute_command(shell, context, env, 0);
 			free_all(shell);
 			free_context_list(context);
 			exit(status);

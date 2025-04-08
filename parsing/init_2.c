@@ -6,7 +6,7 @@
 /*   By: lalwafi <lalwafi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 11:51:53 by lalwafi           #+#    #+#             */
-/*   Updated: 2025/03/06 12:27:37 by lalwafi          ###   ########.fr       */
+/*   Updated: 2025/03/07 03:21:57 by lalwafi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,4 +35,16 @@ t_command	*initialize_commands(void)
 	cmd->redir = NULL;
 	cmd->next = NULL;
 	return (cmd);
+}
+
+t_split	*init_split(void)
+{
+	t_split	*split;
+
+	split = ft_calloc(sizeof(t_split), 1);
+	split->counter = 0;
+	split->i = 0;
+	split->len = 0;
+	split->result = NULL;
+	return (split);
 }

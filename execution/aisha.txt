@@ -13,3 +13,6 @@ env ->change to write
 export ->need to  fix it
 unset -> is not working 
 pwd  should work after update the cd 
+
+
+echo hello "world" >'file.txt' | cat -e > meowmeow

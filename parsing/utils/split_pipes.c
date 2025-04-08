@@ -6,7 +6,7 @@
 /*   By: lalwafi <lalwafi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 20:21:30 by lalwafi           #+#    #+#             */
-/*   Updated: 2025/03/06 17:13:52 by lalwafi          ###   ########.fr       */
+/*   Updated: 2025/03/07 03:21:53 by lalwafi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,15 +35,13 @@ int	make_words(char const *s, char c)
 	return (count);
 }
 
-char	**make_letters(char **result, char const *s, char c, int count)
+char	**make_letters(t_split *split, char const *s, char c, int count)
 {
-	t_split	*split;
+	char	**res;
 
-	split = ft_calloc(sizeof(t_split), 1);
 	split->i = 0;
 	split->counter = 0;
 	split->len = 0;
-	split->result = result;
 	while (s[split->i] != '\0' && split->counter < count)
 	{
 		if (s[split->i] == '"' || s[split->i] == '\'')
@@ -59,8 +57,10 @@ char	**make_letters(char **result, char const *s, char c, int count)
 		else
 			split->i++;
 	}
-	result[split->counter] = NULL;
-	return (result);
+	res = copy_strs(split->result);
+	free_array(split->result);
+	free(split);
+	return (res);
 }
 
 t_split	*make_letters_2(t_split *sp, char const *s, char c)
@@ -83,23 +83,29 @@ t_split	*make_letters_2(t_split *sp, char const *s, char c)
 	return (sp);
 }
 
-char	**one_word(char const *s, char **result)
+char	**one_word(char const *s, t_split *split)
 {
-	result[0] = ft_strdup(s);
-	result[1] = NULL;
+	char	**result;
+
+	split->result[0] = ft_strdup(s);
+	split->result[1] = NULL;
+	result = copy_strs(split->result);
+	free_array(split->result);
+	free(split);
 	return (result);
 }
 
 char	**split_pipes(char const *s, char c)
 {
-	char	**result;
 	int		count;
+	t_split	*split;
 
+	split = ft_calloc(sizeof(t_split), 1);
 	count = make_words(s, c);
-	result = ft_calloc(sizeof(char *), (count + 1));
-	if (!result)
+	split->result = ft_calloc(sizeof(char *), (count + 1));
+	if (!split->result)
 		return (NULL);
 	if (count == 1)
-		return (one_word(s, result));
-	return (make_letters(result, s, c, count));
+		return (one_word(s, split));
+	return (make_letters(split, s, c, count));
 }

@@ -6,7 +6,7 @@
 /*   By: lalwafi <lalwafi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 16:31:50 by lalwafi           #+#    #+#             */
-/*   Updated: 2025/03/06 17:17:04 by lalwafi          ###   ########.fr       */
+/*   Updated: 2025/03/07 03:39:57 by lalwafi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,4 +74,17 @@ char	*rmv_extra_spaces_2(char *result, char *str, int i, int j)
 	}
 	result[j] = '\0';
 	return (result);
+}
+
+bool	only_spaces(char *str)
+{
+	int	i;
+
+	i = -1;
+	while (str[++i])
+	{
+		if (str[i] != ' ')
+			return (FALSE);
+	}
+	return (TRUE);
 }

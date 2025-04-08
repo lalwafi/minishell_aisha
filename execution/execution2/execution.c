@@ -6,7 +6,7 @@
 /*   By: lalwafi <lalwafi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/02 21:11:32 by lalwafi           #+#    #+#             */
-/*   Updated: 2025/03/06 18:09:20 by lalwafi          ###   ########.fr       */
+/*   Updated: 2025/03/06 21:44:17 by lalwafi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,19 +60,14 @@ char	*find_path(char *cmd, char **env)
 	return (free_array(paths), NULL);
 }
 
-void	handle_everything(t_context *context, t_command *commands, char **env)
+static void	execute_command_2(t_context *context)
 {
-	context->args = copy_strs(commands->cmd_args);
-	if (is_bulidin(commands->cmd_args[0]))
-		context->cmd = ft_strdup(commands->cmd_args[0]);
-	else if (commands->cmd_args[0] != NULL)
-		context->cmd = find_path(commands->cmd_args[0], env);
-	handle_redirects(context, commands);
-	if (commands->next)
-		handle_everything(context->next, commands->next, env);
+	(dup2(context->inputfd, 0), close(context->inputfd));
+	context->inputfd = -1;
 }
 
-int	execute_command( t_shell *shell, t_context *context, t_environment *env)
+int	execute_command( t_shell *shell, t_context *context, t_environment *env, \
+	int errnum)
 {
 	if (context->next)
 		free_context_list(context->next);
@@ -80,26 +75,24 @@ int	execute_command( t_shell *shell, t_context *context, t_environment *env)
 	if (context->error != 0)
 		return (context->error);
 	if (context->inputfd != -1)
-	{
-		(dup2(context->inputfd, 0), close(context->inputfd));
-		context->inputfd = -1;
-	}
+		execute_command_2(context);
 	if (context->outputfd != -1)
 	{
 		(dup2(context->outputfd, 1), close(context->outputfd));
 		context->outputfd = -1;
 	}
 	if (context->cmd == NULL)
-		return (127);
+		return (ft_putstr_fd(context->args[0], 2),
+			ft_putstr_fd(": Command not found\n", 2), 127);
 	if (is_bulidin(context->cmd))
 		return (run_bulidin(shell, context, env));
-	if (execve(context->cmd, context->args, env->export_env) == -1)
-	{
-		ft_putstr_fd(context->args[0], 2);
-		ft_putstr_fd(": Error executing\n", 2);
-	}
-	// TODO check error type and print appropriate msg
-	return (127); //TODO Return with correct error msg
+	execve(context->cmd, context->args, env->export_env);
+	errnum = errno;
+	ft_putstr_fd(context->args[0], 2);
+	if (errnum == EACCES)
+		return (ft_putstr_fd(": Permission Denied\n", 2), 126);
+	ft_putstr_fd(": Command not found\n", 2);
+	return (127);
 }
 
 void	execution(t_shell *shell, t_environment *env)
@@ -109,23 +102,24 @@ void	execution(t_shell *shell, t_environment *env)
 	int			last_pid;
 
 	context = create_context_list(shell->commands, env, shell);
-	// TODO check error
+	if (!context)
+	{
+		shell->exit_code = 1;
+		return ;
+	}
 	signal(SIGINT, SIG_DFL);
 	signal(SIGQUIT, SIG_DFL);
 	if (context->next == NULL && is_bulidin(context->cmd))
 	{
 		shell->exit_code = exec_bulidin(shell, context, env);
-		return ;
+		return (free_context(context));
 	}
 	last_pid = execute_context(shell, context, env);
 	signal(SIGINT, SIG_IGN);
 	waitpid(last_pid, &status, 0);
 	while (wait(NULL) != -1)
 		;
-	// TODO check if status is signaled
 	shell->exit_code = WEXITSTATUS(status);
+	if (WIFSIGNALED(status))
+		shell->exit_code = handle_signaled(WTERMSIG(status));
 }
-/*
-	if error != 0, dont execute anything, free and exit with error code
-	if cmd == NULL, then command not found free and exit with 127
-*/

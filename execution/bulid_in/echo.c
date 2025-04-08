@@ -6,7 +6,7 @@
 /*   By: amagoury <amagoury@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/16 15:30:37 by aishamagour       #+#    #+#             */
-/*   Updated: 2025/03/06 15:41:26 by amagoury         ###   ########.fr       */
+/*   Updated: 2025/03/06 19:22:26 by amagoury         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,37 +64,3 @@ int	my_echo(t_context *ctx)
 		write(fd, "\n", 1);
 	return (0);
 }
-// int	my_echo(t_context *context)
-// {
-// 	int		i;
-// 	int		j;
-// 	bool	flag;
-// 	int		fd;
-
-// 	flag = false;
-// 	i = 1;
-// 	fd = context->outputfd;
-// 	if (fd == -1)
-// 		fd = 1;
-// 	while (context->args[i] && context->args[i][0] == '-' &&
-// 			context->args[i][1] == 'n' && is_n(context->args[i]) == 0)
-// 	{
-// 		flag = true;
-// 		i++;
-// 	}
-// 	while (context->args[i])
-// 	{
-// 		j = 0;
-// 		while (context->args[i][j])
-// 		{
-// 			write(fd, &context->args[i][j], 1);
-// 			j++;
-// 		}
-// 		if (context->args[i + 1])
-// 			write(fd, " ", 1);
-// 		i++;
-// 	}
-// 	if (flag == false)
-// 		write(fd, "\n", 1);
-// 	return (0);
-// }

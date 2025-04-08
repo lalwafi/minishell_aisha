@@ -3,12 +3,11 @@ CC			= cc
 
 CFLAGS 		= -Wall -Werror -Wextra 
 CFLAGS		+= -I.
-CFLAGS		+= -g3
-CFLAGS		+= -fsanitize=address
 CFLAGS		+=	-Ilibft -I./ -I/opt/vagrant/embedded/include/readline -I/opt/vagrant/embedded/include
-#CFLAGS		= -Wall -Werror -Wextra -g3  -I /Users/$(USER)/.brew/opt/readline/include -fsanitize=address
-#CFLAGS		+= -I/opt/vagrant/embedded/include/readline -I/opt/vagrant/embedded/include
-#CFLAGS		+= -L/opt/vagrant/embedded/lib/ -lreadline -I/opt/vagrant/embedded/include/readline -I/opt/vagrant/embedded/include
+# CFLAGS		+= -g3
+# CFLAGS		+= -fsanitize=address
+# CFLAGS		+= -I/opt/vagrant/embedded/include/readline -I/opt/vagrant/embedded/include
+# CFLAGS		+= -L/opt/vagrant/embedded/lib/ -lreadline -I/opt/vagrant/embedded/include/readline -I/opt/vagrant/embedded/include
 
 SRCS		=  $(addprefix parsing/, main.c parsing.c syntax_stuff.c free_all.c init_1.c init_2.c\
 				variable_stuff_v3.c tokenize_1.c tokenize_2.c operators.c remake_stuff.c) \
@@ -24,12 +23,7 @@ OBJ			= $(SRCS:.c=.o)
 
 LIBFT		= aish_libft/libft.a
 
-
 READLINE	=	-L/opt/vagrant/embedded/lib/ -lreadline 
-
-# CFLAGS		=
-# CFLAGS		+=	-g3 
-# NAME		=	minishell
 
 all			:	${NAME}
 

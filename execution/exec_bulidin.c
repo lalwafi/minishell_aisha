@@ -6,7 +6,7 @@
 /*   By: lalwafi <lalwafi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 16:09:53 by aishamagour       #+#    #+#             */
-/*   Updated: 2025/03/06 17:43:04 by lalwafi          ###   ########.fr       */
+/*   Updated: 2025/03/06 21:18:27 by lalwafi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ int	exec_bulidin( t_shell *shell, t_context *cntx, t_environment *env)
 		return (my_cd(env, path));
 	}
 	else if (ft_strcmp(cntx->args[0], "pwd") == 0)
-		return (ms_pwd());
+		return (ms_pwd(cntx));
 	else if (ft_strcmp(cntx->args[0], "export") == 0)
 		return (ft_export(cntx, env->vals, shell));
 	else if (ft_strcmp(cntx->args[0], "unset") == 0)

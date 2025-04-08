@@ -6,7 +6,7 @@
 /*   By: lalwafi <lalwafi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 17:37:42 by lalwafi           #+#    #+#             */
-/*   Updated: 2025/03/06 19:45:44 by lalwafi          ###   ########.fr       */
+/*   Updated: 2025/03/07 03:41:30 by lalwafi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,9 @@ void	minishell(t_shell *shell)
 			add_history(shell->input_L);
 		if (!shell->input_L)
 			break ;
+		else if (shell->input_L[0] != '\0' && \
+			only_spaces(shell->input_L) == TRUE)
+			shell->exit_code = 0;
 		else if (shell->input_L[0] != '\0')
 		{
 			shell->parse_fail_L = parser(shell);
